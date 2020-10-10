@@ -1,0 +1,35 @@
+#!/usr/bin/env php
+<?php
+
+use Stoffel\Console\Gradient\GradientHelper;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\SingleCommandApplication;
+
+require dirname(__DIR__).'/vendor/autoload.php';
+
+(new SingleCommandApplication())
+    ->setCode(function (InputInterface $input, OutputInterface $output) {
+
+        $title = base64_decode('ICAgICAgICAgICAgICAgICAgICAgICAgICAgXyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXyBfICAgICAgICAgICAgXyAgIAogIF9fXyBfX18gIF8gX18gIF9fXyAgX19fIHwgfCBfX18gICAgICAgIF9fIF8gXyBfXyBfXyBfICBfX3wgKF8pIF9fXyBfIF9fIHwgfF8gCiAvIF9fLyBfIFx8ICdfIFwvIF9ffC8gXyBcfCB8LyBfIFxfX19fXyAvIF9gIHwgJ19fLyBfYCB8LyBfYCB8IHwvIF8gXCAnXyBcfCBfX3wKfCAoX3wgKF8pIHwgfCB8IFxfXyBcIChfKSB8IHwgIF9fL19fX19ffCAoX3wgfCB8IHwgKF98IHwgKF98IHwgfCAgX18vIHwgfCB8IHxfIAogXF9fX1xfX18vfF98IHxffF9fXy9cX19fL3xffFxfX198ICAgICAgXF9fLCB8X3wgIFxfXyxffFxfXyxffF98XF9fX3xffCB8X3xcX198CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8X19fLyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA=');
+
+
+        GradientHelper::create($output)
+            ->setText($title)
+            ->setStyle('pastel')
+            ->write();
+
+        $output->write(PHP_EOL);
+        foreach(['atlas', 'pastel', 'morning', 'cristal', 'rainbow'] as $gradient) {
+            GradientHelper::create($output)
+                ->setText('            Lorem ipsum dolor sit amet, consectetur adipiscing elit')
+                ->setStyle($gradient)
+                ->write();
+
+            $output->write(PHP_EOL);
+        }
+        $output->write(PHP_EOL);
+
+    })
+    ->run();
+
