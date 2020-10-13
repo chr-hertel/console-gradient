@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Stoffel\Console\Gradient;
 
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class GradientHelper
@@ -37,9 +38,9 @@ class GradientHelper
         $this->colors = self::GRADIENT_STYLES['retro'][0];
     }
 
-    public static function create(OutputInterface $output): self
+    public static function create(OutputInterface $output = null): self
     {
-        return new self($output);
+        return new self($output ?? new NullOutput());
     }
 
     public function setText(string $text): self
@@ -92,7 +93,7 @@ class GradientHelper
         return $this;
     }
 
-    public function write(): void
+    public function colorize(): string
     {
         $gradient = new Gradient(...$this->colors);
         $steps = $this->getSteps();
@@ -100,10 +101,24 @@ class GradientHelper
 
         $output = '';
         $textLength = mb_strlen($this->text);
+        $colorized = 0;
         for ($i = 0; $i < $textLength; $i++) {
-            $output .= $colors[$i % $steps]->apply(mb_substr($this->text, $i, 1));
+            $char = mb_substr($this->text, $i, 1);
+            if (PHP_EOL === $char) {
+                $output .= $char;
+                continue;
+            }
+
+            $output .= $colors[$colorized % $steps]->apply($char);
+            ++$colorized;
         }
-        $this->output->write($output);
+
+        return $output;
+    }
+
+    public function write(): void
+    {
+        $this->output->write($this->colorize());
 
         if ($this->linebreak) {
             $this->output->write(PHP_EOL);
